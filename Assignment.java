@@ -6,7 +6,7 @@ import java.util.*;
 class GardenItemStore {
     //^ Fields:
     Map<String, ArrayList<String>> map;
-    ArrayList<String> plantArrayList = new ArrayList<String>();
+    
 
     //^ Methods
     //$ Constructor that takes no arguments and initializes the map using a new
@@ -20,9 +20,13 @@ class GardenItemStore {
     }
 
     //£ Method that creates new mapping without replacing existing mapping
-    public void put(String key, String plant) { //! BUG: Stores items with different keys in the same bucket 
-        map.put(key, this.plantArrayList); // Create map with one key and empty array as list of plants
-        map.get(key).add(plant); // Get the map first and then add element to array
+    public void put(String key, String plant) { 
+        if (this.containsKey(key)) { // Check whether the key already exists
+            map.get(key).add(plant); // Get the map first and then add element to array
+        } else { 
+            map.put(key, new ArrayList<String>()); // If key does not exit then create a new list map 
+            map.get(key).add(plant); // Get the map first and then add element to array
+        }
     }
 
     //$ Method that return a random value from a given key
@@ -72,8 +76,8 @@ public class Assignment {
         System.out.println("Contains 3: " + test.containsKey("three"));
         System.out.println("Contains 4: " + test.containsKey("four")); System.out.println();
 
-        System.out.println("Get Values 1:" + test.getValue("two"));
-        System.out.println("Get Values 2:" + test.getValue("one"));
+        System.out.println("Get Values 1:" + test.getValue("one"));
+        System.out.println("Get Values 2:" + test.getValue("two"));
         System.out.println("Get Values 3:" + test.getValue("three"));System.out.println();
 
         System.out.println("Random Item 1:" + test.getRandomItem("one"));
@@ -92,8 +96,6 @@ public class Assignment {
         System.out.println(gis0.containsKey("a"));
 
         System.out.println(gis0.getRandomItem("a"));
-
-        gis0.print("a");
     }
 
     public static void main(String[] args) {
