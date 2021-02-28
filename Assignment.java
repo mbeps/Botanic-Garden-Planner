@@ -21,12 +21,10 @@ class GardenItemStore {
 
     //£ Method that creates new mapping without replacing existing mapping
     public void put(String key, String plant) { 
-        if (this.containsKey(key)) { // Check whether the key already exists
-            map.get(key).add(plant); // Get the map first and then add element to array
-        } else { 
+        if (!this.containsKey(key)) {
             map.put(key, new ArrayList<String>()); // If key does not exit then create a new list map 
-            map.get(key).add(plant); // Get the map first and then add element to array
         }
+        map.get(key).add(plant); // Get the map first and then add element to array
     }
 
     //$ Method that return a random value from a given key
@@ -41,7 +39,7 @@ class GardenItemStore {
             String capitalPlant =  array.get(randomIndex).substring(0, 1).toUpperCase() + array.get(randomIndex).substring(1); // Capitalize first letter: Return first character and capitalize then add rest of string except first index
             String capitalKey = key.substring(0, 1).toUpperCase() + key.substring(1);
             
-            return (capitalKey + capitalPlant);
+            return (capitalPlant);
         } else {
             //$ If key does not contains mapping then return null 
             return (null);
