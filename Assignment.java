@@ -12,8 +12,8 @@ class GardenItemStore {
     public GardenItemStore() {
         map = new HashMap<String, ArrayList<String>>(); //* HashMap cannot have multiple values per key which means that an Array has to be used
     }
-    //£ takes a file name as an argument and loads a list of plants into the map using the class
-    public GardenItemStore(String file) throws IOException {
+    
+    public GardenItemStore(String file) throws IOException { //& Dependencies: initializeMap
         // map = new HashMap<String, ArrayList<String>>();
         this.initializeMap();
 
@@ -24,25 +24,44 @@ class GardenItemStore {
 				this.put(firstCharacterKey.toLowerCase(), word.toLowerCase()); // Create new mapping
 			}
 		}
+        /** Explanation
+         * To add elements from file, buffered reader and file reader are used to read over the file efficiently
+         * Use try with resources as BufferedReader may throw exception
+         * While loop is used to iterate over the file line-by-line the line is null
+         * The first character is extracted by getting character from index position 0 to 1
+         * Call put method to add the key (first character) in lower case and the entire line also as lower case  
+         */
     }
 
-    public void initializeMap() {
-        map = new HashMap<String, ArrayList<String>>();
+    public void initializeMap() {//& Dependencies: GardenItemStore
+        map = new HashMap<String, ArrayList<String>>(); // Used for initializing hash map in sub-classes
+        /** Explanation
+         * Map field is not accessible to other sub-classes as it is private
+         * Using the super-class constructor would allow for constricting sub-objects but cannot be used when using custom constructors or specific access
+         */
     }
     
-    public boolean containsKey(String key) {
+    public boolean containsKey(String key) { //& Dependencies: put
         return (this.map.containsKey(key));
     }
 
-    public void put(String key, String plant) { 
+    public void put(String key, String plant) { //& Dependencies: getRandomItem
         if (!this.containsKey(key)) {
             map.put(key, new ArrayList<String>()); // If key does not exit then create a new list map 
         }
         map.get(key).add(plant); // Get the map first and then add element to array
+        /**Explanation
+         * Before adding new mapping, it has to be checked if it already exists by checking if the key is stored
+         * Without checking, the mapping will be overwritten which means that all the mappings will be the same
+         * If the mapping does not exists, then create a new mapping
+         * Checking the absence of mapping is more efficient tan to check if it exits as if-else statement does not have to be used
+         * Outside the if-statement is the point where a mapping exists (from before or new)
+         * Getting the map will return an ArrayList, elements will be appended into the array  
+         */
     }
 
-    public String getRandomItem(String key) { //* Returns random plant by randomly selecting index
-        //$ If key contains mapping then return random
+    public String getRandomItem(String key) { //& Dependencies:  
+        //* Returns random plant by randomly selecting index
         if (this.map.get(key) != null) {
             Random randomGenerator = new Random();
             ArrayList<String> array = this.map.get(key); // Returns that array of plants
@@ -54,17 +73,28 @@ class GardenItemStore {
             return (capitalPlant);
         } else {
             return (null);
-        }       
+        }
+        /** Explanation
+         * Firstly, the mapping has to exist before returning elements from it. Therefore, if-statement is used to check whether the mapping is null
+         * The mapping associated with key is returned (ArrayList type) and assigned to a local variable
+         * A random number is generated from 0 to the length of the array
+         * The random number will be used as index which will return a random element from array
+         */ 
+    }
+
+    public ArrayList<String> getMappings(String key) {
+        return (this.map.get(key)); // Returns mapping 
+        /** Explanation
+         * Returns mapping as sub-classes will not have access
+         * Map field is private therefore not accessible
+         */
     }
 
     //^ Tests
     public ArrayList<String> getValue(String key) {
         return (this.map.get(key));
-        // System.out.println(this.map.keySet() + this.map.get(this.map.keySet()));
     }
-    public ArrayList<String> getMappings(String key) {
-        return (this.map.get(key));
-    }
+
     public void getSet() {
         System.out.println(this.map.keySet());
     }
@@ -87,7 +117,7 @@ class TreeStore extends GardenItemStore {
     }
 
     @Override
-    public String getRandomItem(String key) {
+    public String getRandomItem(String key) { //& Dependencies: extractName, extractSize, height
         if (super.getMappings(key) != null) {
             Random randomGenerator = new Random();
             ArrayList<String> array = this.getMappings(key); // Returns that array of plants
@@ -97,26 +127,38 @@ class TreeStore extends GardenItemStore {
             int extractedHeight = extractSize(array.get(randomIndex));
 
             String capitalPlant =  array.get(randomIndex).substring(0, 1).toUpperCase() + extractedName.substring(1); // Capitalize first letter: Return first character and capitalize then add rest of string except first index.
-            
-            
             return (capitalPlant + height(extractedHeight));
         } else {
             return (null);
         }
+        /** Explanation
+         * Similar to random method of super-class
+         * Items are stored as entire lines which means that their sizes are also stored
+         * After random element is returned (same as super-class method), extracted names is called which will only display the plant names without the size
+         * Height categories are added by extracting the height from element (as size was also saved) and passing it onto height method which will return message as string 
+         */
     }
 
-    public String extractName(String word) {
+    public String extractName(String word) { //& Dependencies: getRandomItem
         return (word.substring(0, word.lastIndexOf(" ")));
+        /** Explanation
+         * Extracts name by returning portion of string
+         * Index from 0 (start) to the last space are returned as everything after last space is the size 
+         */
     }
 
-    public int extractSize(String word) {
+    public int extractSize(String word) { //& Dependencies: getRandomItem
         String numberString = (word.substring(word.lastIndexOf(" ") + 1, word.length() - 1)); // Extract number from final space to -1 final character
-        int number = Integer.parseInt(numberString); //! Throws NumberFormatException
-        
+        int number = Integer.parseInt(numberString); // Convert from String to int //! Throws NumberFormatException
         return (number);
+        /**
+         * Return string of number from the end of line
+         * Index from the last space (everything before is plant name) to one less than the length so the 'm' is excluded
+         * Convert string of number to int type
+         */
     }
 
-    public String height(int height) {
+    public String height(int height) { //& Dependencies: getRandomItem
         if (height > 80) {
             return (" (very tall tree)");
         } else if (height > 15){
