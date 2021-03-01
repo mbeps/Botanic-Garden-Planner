@@ -130,11 +130,6 @@ class TreeStore extends GardenItemStore {
 
 //^ TESTING:
 class GardenItemStoreTest {
-
-}
-
-public class Assignment {
-    //^ Methods:
     public static void myTest() {
         GardenItemStore test = new GardenItemStore();
         
@@ -183,10 +178,12 @@ public class Assignment {
 
         System.out.println(gis0.getRandomItem("a"));
     }
+}
 
+public class Assignment {
     public static void main(String[] args) throws IOException {
         // myTest();
-        myFileTest();
+        GardenItemStoreTest.myFileTest();
         // plantsTest();
     }   
 }
