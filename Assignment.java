@@ -6,7 +6,7 @@ import java.io.*;
 //^ CLASSES:
 class GardenItemStore {
     //^ Fields:
-    Map<String, ArrayList<String>> map;
+    private Map<String, ArrayList<String>> map;
 
     //^ Methods
     public GardenItemStore() {
@@ -14,16 +14,20 @@ class GardenItemStore {
     }
     //£ takes a file name as an argument and loads a list of plants into the map using the class
     public GardenItemStore(String file) throws IOException {
-        map = new HashMap<String, ArrayList<String>>();
+        // map = new HashMap<String, ArrayList<String>>();
+        this.initializeMap();
 
         try (BufferedReader inputStream = new BufferedReader(new FileReader(new File("test.txt")))) { //! May throw exception
 			String word;
 			while ((word = inputStream.readLine()) != null) {// Checks each line. Loops until the line is empty
 				String firstCharacterKey = word.substring(0, 1); // Extract the first character for each word to use as key for mapping
-				//£ Call put method
 				this.put(firstCharacterKey.toLowerCase(), word.toLowerCase()); // Create new mapping
 			}
 		}
+    }
+
+    public void initializeMap() {
+        map = new HashMap<String, ArrayList<String>>();
     }
     
     public boolean containsKey(String key) {
@@ -40,7 +44,6 @@ class GardenItemStore {
     public String getRandomItem(String key) { //* Returns random plant by randomly selecting index
         //$ If key contains mapping then return random
         if (this.map.get(key) != null) {
-            //£ Capitalize key 
             Random randomGenerator = new Random();
             ArrayList<String> array = this.map.get(key); // Returns that array of plants
             int randomIndex = randomGenerator.nextInt(array.size()); // Select random index between 0 and array size
@@ -50,7 +53,6 @@ class GardenItemStore {
             
             return (capitalPlant);
         } else {
-            //$ If key does not contains mapping then return null 
             return (null);
         }       
     }
@@ -60,25 +62,31 @@ class GardenItemStore {
         return (this.map.get(key));
         // System.out.println(this.map.keySet() + this.map.get(this.map.keySet()));
     }
+    public ArrayList<String> getMappings(String key) {
+        return (this.map.get(key));
+    }
     public void getSet() {
         System.out.println(this.map.keySet());
     }
 }
 
 class OrchidStore extends GardenItemStore {
+    public OrchidStore(String file) throws IOException {
+        super(file); //! May throw exception
+    }
 
     @Override
     public String getRandomItem(String key) {
-        return "";
+        return (super.getRandomItem(key) + " (orchid)"); // Use the method from super and append
     }
 }
 
-class TreeStore extends GardenItemStore {
 
-    @Override
-    public String getRandomItem(String key) {
-        return "";
-    }
+
+
+//^ TESTING:
+class GardenItemStoreTest {
+
 }
 
 public class Assignment {
@@ -101,11 +109,11 @@ public class Assignment {
 
         System.out.println("Get Values 1:" + test.getValue("one"));
         System.out.println("Get Values 2:" + test.getValue("two"));
-        System.out.println("Get Values 3:" + test.getValue("three"));System.out.println();
+        System.out.println("Get Values 3:" + test.getValue("three")); System.out.println();
 
         System.out.println("Random Item 1:" + test.getRandomItem("one"));
         System.out.println("Random Item 2:" + test.getRandomItem("two"));
-        System.out.println("Random Item 3:" + test.getRandomItem("three"));System.out.println();
+        System.out.println("Random Item 3:" + test.getRandomItem("three")); System.out.println();
     }
     public static void myFileTest() throws IOException {
         GardenItemStore test = new GardenItemStore("test.txt");
@@ -114,8 +122,10 @@ public class Assignment {
         System.out.println("Contains L: " + test.containsKey("d")); System.out.println();
 
         System.out.println("Get Values L:" + test.getValue("l"));
+        System.out.println("Get Values d:" + test.getValue("d")); System.out.println();
 
-
+        System.out.println("Random Item 2:" + test.getRandomItem("l"));
+        System.out.println("Random Item 3:" + test.getRandomItem("d")); System.out.println();
     }
     public static void plantsTest() {
         GardenItemStore gis0 = new GardenItemStore();
