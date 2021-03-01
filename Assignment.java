@@ -81,7 +81,51 @@ class OrchidStore extends GardenItemStore {
     }
 }
 
+class TreeStore extends GardenItemStore {
+    public TreeStore(String file) throws IOException {
+        super(file);
+    }
 
+    @Override
+    public String getRandomItem(String key) {
+        if (super.getMappings(key) != null) {
+            Random randomGenerator = new Random();
+            ArrayList<String> array = this.getMappings(key); // Returns that array of plants
+            int randomIndex = randomGenerator.nextInt(array.size()); // Select random index between 0 and array size
+            
+            String extractedName = extractName(array.get(randomIndex)); // Returns the extracted name without plant height 
+            int extractedHeight = extractSize(array.get(randomIndex));
+
+            String capitalPlant =  array.get(randomIndex).substring(0, 1).toUpperCase() + extractedName.substring(1); // Capitalize first letter: Return first character and capitalize then add rest of string except first index.
+            
+            
+            return (capitalPlant + height(extractedHeight));
+        } else {
+            return (null);
+        }
+    }
+
+    public String extractName(String word) {
+        return (word.substring(0, word.lastIndexOf(" ")));
+    }
+
+    public int extractSize(String word) {
+        String numberString = (word.substring(word.lastIndexOf(" ") + 1, word.length() - 1)); // Extract number from final space to -1 final character
+        int number = Integer.parseInt(numberString); //! Throws NumberFormatException
+        
+        return (number);
+    }
+
+    public String height(int height) {
+        if (height > 80) {
+            return (" (very tall tree)");
+        } else if (height > 15){
+            return (" (tall tree)");
+        } else {
+            return (" (small tree)");
+        }
+    }
+}
 
 
 //^ TESTING:
