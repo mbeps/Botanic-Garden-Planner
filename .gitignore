@@ -1,0 +1,9 @@
+# Folders
+.vscode
+# docs
+
+# Files
+*.class
+TestHashMap.java
+TestRandomArray.java
+*.txt
